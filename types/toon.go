@@ -6,6 +6,7 @@ import "fmt"
 type Toon struct {
 	ToonBase
 	key             string
+	unlocked        bool
 	starLevel       int //max 7
 	level           int //max 80
 	gearLevel       int // max 11
@@ -50,10 +51,55 @@ func (t *Toon) Promote() error {
 	return nil
 }
 
+// CanUnlock returns a true if enough shards have been collected an a toon
+// has not been previously unlocked
+func (t *Toon) CanUnlock() bool {
+	if t.unlocked {
+		return false
+	}
+
+	if t.unusedShards >= unlockMath(t.starsToUnlock) {
+		return true
+	}
+
+	return false
+}
+
+// Unlock converts unusedShards to Unlock a toon if the toon has reached the threshhold
+func (t *Toon) Unlock() error {
+	if t.unlocked {
+		return fmt.Errorf("Attempting to unlock and alread unlocked toon")
+	}
+
+	unlockShards := unlockMath(t.starsToUnlock)
+	if t.unusedShards >= unlockMath(t.starsToUnlock) {
+		t.unlocked = true
+		t.unusedShards = t.unusedShards - unlockShards
+		return nil
+	}
+	return fmt.Errorf("Unable to unlock")
+}
+
+func unlockMath(unlockLevel int) int {
+	switch unlockLevel {
+	case 1:
+		return 10
+	case 2:
+		return 25
+	case 3:
+		return 50
+	case 4:
+		return 80
+	case 5:
+		return 145
+	}
+	return -1
+}
+
 func shardMath(currentLevel int) int {
 	switch currentLevel {
 	case 1:
-		return 10
+		return 15
 	case 2:
 		return 25
 	case 3:
