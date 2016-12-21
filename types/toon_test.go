@@ -1,6 +1,9 @@
 package types
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestAddShards(t *testing.T) {
 	toon := Toon{StarLevel: 1, UnusedShards: 2}
@@ -108,6 +111,43 @@ func TestUnlockingUnlocked(t *testing.T) {
 	toon := Toon{Unlocked: true}
 	if toon.CanUnlock() {
 		t.Errorf("Shouldn't be able to unlock %v", toon.Unlocked)
-
 	}
+}
+
+func TestBasicStatPower(t *testing.T) {
+	level := 10
+	starLevel := 2
+	toon := Toon{
+		ToonBasicStatsMultiplier: ToonBasicStatsMultiplier{
+			AgilityMultiplier:  2,
+			StrengthMultiplier: 3,
+			TacticsMultiplier:  4},
+		Level:     10,
+		StarLevel: 2}
+
+	statAssert := Stats{
+		Agility:  2 * level * starLevel,
+		Strength: 3 * level * starLevel,
+		Tactics:  4 * level * starLevel,
+	}
+
+	if !reflect.DeepEqual(statAssert, toon.GetBasicStatPower()) {
+		t.Error("Basic Stat Math not accurate")
+	}
+
+	level = 20
+	starLevel++
+	toon.Level += 10
+	toon.StarLevel = 3
+
+	statAssert = Stats{
+		Agility:  2 * level * starLevel,
+		Strength: 3 * level * starLevel,
+		Tactics:  4 * level * starLevel,
+	}
+
+	if !reflect.DeepEqual(statAssert, toon.GetBasicStatPower()) {
+		t.Error("Basic Stat Math not accurate")
+	}
+
 }

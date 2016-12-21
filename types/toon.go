@@ -27,6 +27,7 @@ type ToonBase struct {
 	// alliances []Alliance
 }
 
+// ToonBasicStatsMultiplier are static values that multiple by level and starLevel to display power
 type ToonBasicStatsMultiplier struct {
 	StrengthMultiplier int // Health and Armor
 	AgilityMultiplier  int // Physical Damage
@@ -119,4 +120,21 @@ func shardMath(currentLevel int) int {
 	default:
 		return -1
 	}
+}
+
+// Stats is dynamically created by multiplying level * starLevel * multiplier
+type Stats struct {
+	Strength int
+	Agility  int
+	Tactics  int
+}
+
+// GetBasicStatPower returns the current power of str, agi, tac
+func (t *Toon) GetBasicStatPower() Stats {
+	fmt.Println("Test")
+	starLevelLevel := t.StarLevel * t.Level
+	str := t.StrengthMultiplier * starLevelLevel
+	agi := t.AgilityMultiplier * starLevelLevel
+	tac := t.TacticsMultiplier * starLevelLevel
+	return Stats{str, agi, tac}
 }
