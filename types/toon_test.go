@@ -1,8 +1,6 @@
 package types
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestAddShards(t *testing.T) {
 	toon := Toon{starLevel: 1, unusedShards: 2}

@@ -4,7 +4,7 @@ import "fmt"
 
 // Toon is a character model for toons
 type Toon struct {
-	ToonBase
+	toonBase
 	key             string
 	unlocked        bool
 	starLevel       int //max 7
@@ -13,7 +13,7 @@ type Toon struct {
 	unusedShards    int
 	promotionStatus bool //enough shards to promote?
 	starsToUnlock   int
-	// Multipliers //intelligence, strength, agility by star level
+	toonBasicStats
 	// Stats //
 	abilities []Ability
 	// mods []Mod
@@ -21,10 +21,16 @@ type Toon struct {
 }
 
 // ToonBase is the unique character information that doesn't change
-type ToonBase struct {
+type toonBase struct {
 	name     string
 	toonType string //attacker, support, tank
 	// alliances []Alliance
+}
+
+type toonBasicStats struct {
+	strength int // Health and Armor
+	agility  int // Physical Damage
+	tactics  int // Special Damage and Resistance
 }
 
 // AddShards increments the shards for a toon and alters the promotionStatus
