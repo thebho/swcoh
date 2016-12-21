@@ -3,58 +3,58 @@ package types
 import "testing"
 
 func TestAddShards(t *testing.T) {
-	toon := Toon{starLevel: 1, unusedShards: 2}
+	toon := Toon{StarLevel: 1, UnusedShards: 2}
 	toon.AddShards(14)
 
-	if toon.unusedShards != 16 {
+	if toon.UnusedShards != 16 {
 		t.Error("Shard total didn't add up")
 	}
 
-	if toon.promotionStatus != true {
+	if toon.PromotionStatus != true {
 		t.Error("Went from 1 to 11 shards and didn't allow permission")
 	}
 
 }
 
 func TestBadPromotion(t *testing.T) {
-	toon := Toon{promotionStatus: false}
+	toon := Toon{PromotionStatus: false}
 	err := toon.Promote()
 
 	if err == nil {
-		t.Errorf("Expected promotion to fail")
+		t.Errorf("Expected Promotion to fail")
 	}
 }
 
 func TestPromotion(t *testing.T) {
 	promotionSlice := []Toon{
-		Toon{promotionStatus: true, unusedShards: 16, starLevel: 1},
-		Toon{promotionStatus: true, unusedShards: 26, starLevel: 2},
-		Toon{promotionStatus: true, unusedShards: 31, starLevel: 3},
-		Toon{promotionStatus: true, unusedShards: 66, starLevel: 4},
-		Toon{promotionStatus: true, unusedShards: 86, starLevel: 5},
-		Toon{promotionStatus: true, unusedShards: 101, starLevel: 6},
+		Toon{PromotionStatus: true, UnusedShards: 16, StarLevel: 1},
+		Toon{PromotionStatus: true, UnusedShards: 26, StarLevel: 2},
+		Toon{PromotionStatus: true, UnusedShards: 31, StarLevel: 3},
+		Toon{PromotionStatus: true, UnusedShards: 66, StarLevel: 4},
+		Toon{PromotionStatus: true, UnusedShards: 86, StarLevel: 5},
+		Toon{PromotionStatus: true, UnusedShards: 101, StarLevel: 6},
 	}
 	// toon := Toon{promotionStatus: true, unusedShards: 12, starLevel: 1}
 	for _, toon := range promotionSlice {
-		startLevel := toon.starLevel
+		startLevel := toon.StarLevel
 		err := toon.Promote()
 
 		if err != nil {
 			t.Errorf("Expected promotion to succeed")
 		}
 
-		if toon.unusedShards != 1 {
-			t.Errorf("Unusued shards not accurate after promotion to %d stars", toon.starLevel)
+		if toon.UnusedShards != 1 {
+			t.Errorf("Unusued shards not accurate after promotion to %d stars", toon.StarLevel)
 		}
 
-		if toon.starLevel != startLevel+1 {
-			t.Errorf("Expected a promotion from: %d stars", toon.starLevel)
+		if toon.StarLevel != startLevel+1 {
+			t.Errorf("Expected a promotion from: %d stars", toon.StarLevel)
 		}
 	}
 }
 
 func TestUnlockingPreviouslyUnlocked(t *testing.T) {
-	toon := Toon{unlocked: true}
+	toon := Toon{Unlocked: true}
 	err := toon.Unlock()
 
 	if err == nil {
@@ -64,50 +64,50 @@ func TestUnlockingPreviouslyUnlocked(t *testing.T) {
 
 func TestUnlock(t *testing.T) {
 	promotionSlice := []Toon{
-		Toon{unusedShards: 10, starsToUnlock: 1},
-		Toon{unusedShards: 25, starsToUnlock: 2},
-		Toon{unusedShards: 50, starsToUnlock: 3},
-		Toon{unusedShards: 80, starsToUnlock: 4},
-		Toon{unusedShards: 145, starsToUnlock: 5},
+		Toon{UnusedShards: 10, StarsToUnlock: 1},
+		Toon{UnusedShards: 25, StarsToUnlock: 2},
+		Toon{UnusedShards: 50, StarsToUnlock: 3},
+		Toon{UnusedShards: 80, StarsToUnlock: 4},
+		Toon{UnusedShards: 145, StarsToUnlock: 5},
 	}
 
 	for _, toon := range promotionSlice {
 		if !toon.CanUnlock() {
-			t.Errorf("CanUnlocks failed: %d, %d", toon.unusedShards, toon.starsToUnlock)
+			t.Errorf("CanUnlocks failed: %d, %d", toon.UnusedShards, toon.StarsToUnlock)
 
 		}
 		err := toon.Unlock()
 		if err != nil {
-			t.Errorf("Failed to unlock: %d, %d, %v", toon.unusedShards, toon.starsToUnlock, err)
+			t.Errorf("Failed to unlock: %d, %d, %v", toon.UnusedShards, toon.StarsToUnlock, err)
 		}
 	}
 }
 
 func TestBadUnlock(t *testing.T) {
 	promotionSlice := []Toon{
-		Toon{unusedShards: 9, starsToUnlock: 1},
-		Toon{unusedShards: 20, starsToUnlock: 2},
-		Toon{unusedShards: 45, starsToUnlock: 3},
-		Toon{unusedShards: 79, starsToUnlock: 4},
-		Toon{unusedShards: 143, starsToUnlock: 5},
+		Toon{UnusedShards: 9, StarsToUnlock: 1},
+		Toon{UnusedShards: 20, StarsToUnlock: 2},
+		Toon{UnusedShards: 45, StarsToUnlock: 3},
+		Toon{UnusedShards: 79, StarsToUnlock: 4},
+		Toon{UnusedShards: 143, StarsToUnlock: 5},
 	}
 
 	for _, toon := range promotionSlice {
 		if toon.CanUnlock() {
-			t.Errorf("CanUnlocks failed: %d, %d", toon.unusedShards, toon.starsToUnlock)
+			t.Errorf("CanUnlocks failed: %d, %d", toon.UnusedShards, toon.StarsToUnlock)
 
 		}
 		err := toon.Unlock()
 		if err == nil {
-			t.Errorf("Expceted failure to unlock: %d, %d, %v", toon.unusedShards, toon.starsToUnlock, err)
+			t.Errorf("Expceted failure to unlock: %d, %d, %v", toon.UnusedShards, toon.StarsToUnlock, err)
 		}
 	}
 }
 
 func TestUnlockingUnlocked(t *testing.T) {
-	toon := Toon{unlocked: true}
+	toon := Toon{Unlocked: true}
 	if toon.CanUnlock() {
-		t.Errorf("Shouldn't be able to unlock %v", toon.unlocked)
+		t.Errorf("Shouldn't be able to unlock %v", toon.Unlocked)
 
 	}
 }
